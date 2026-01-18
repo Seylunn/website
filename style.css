@@ -136,10 +136,10 @@ body {
 }
 
 .command-box {
-    max-width: 800px;
-    margin: 60px auto;
-    padding: 0 20px;
-    background: #111;
+    max-width: 1000px;        /* wider so it’s not squished */
+    margin: 80px auto;        /* more breathing room */
+    padding: 30px 30px;       /* thicker padding */
+    background: #111;         /* dark card background */
     border: 1px solid #b19cd9;
     border-radius: 8px;
 }
@@ -147,6 +147,7 @@ body {
 .command-box h2 {
     color: #b19cd9;
     margin-bottom: 10px;
+    font-size: 28px;
 }
 
 .command-box p {
@@ -157,14 +158,16 @@ body {
 
 .command-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: wrap;          /* allows commands to wrap naturally */
+    gap: 12px;                /* spacing between command tags */
 }
 
 .command-list code {
     background: #222;
     color: #b19cd9;
-    padding: 8px 12px;
+    padding: 10px 14px;       /* bigger tags */
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 16px;          /* larger text */
+    font-weight: 500;
 }
+
