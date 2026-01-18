@@ -99,3 +99,34 @@ body {
     text-decoration: none;
     font-weight: 600;
 }
+.features-list {
+    max-width: 900px;
+    margin: 60px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 0 20px;
+}
+
+.feature-box {
+    background: #111;
+    padding: 25px;
+    border: 1px solid #b19cd9;
+    border-radius: 8px;
+}
+
+.feature-box h2 {
+    color: #b19cd9;
+    margin-bottom: 10px;
+}
+.legal {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+    line-height: 1.7;
+}
+
+.legal h2 {
+    color: #b19cd9;
+    margin-top: 30px;
+}
