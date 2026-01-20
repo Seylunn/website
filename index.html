@@ -1,90 +1,603 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lapis obsidianus — Utility & Security Bot</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Want To Code? - AI Code Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!-- Embed preview for Discord and social platforms -->
-<meta property="og:title" content="lapis obsidianus | Discord Utility & Moderation Bot" />
-<meta property="og:description" content="Enhance your Discord server with lapis obsidianus. Advanced utilities moderation and server commands." />
-<meta property="og:image" content="https://media.discordapp.net/attachments/1461601472331645033/1462510013976154293/download.png?ex=696e7417&is=696d2297&hm=858d6bfb81f21c801cbe73bff2914218efaf8b32d3eee87b38c2a321fe5ba4b3&=&format=webp&quality=lossless&width=1006&height=1006" />
-<meta property="og:url" content="https://lapisobsidianus.vercel.app/" />
-<meta name="theme-color" content="#b19cd9" />
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
 
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,212,255,0.1), transparent);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            animation: bgOrb1 10s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0,153,255,0.1), transparent);
+            border-radius: 50%;
+            bottom: -100px;
+            right: -100px;
+            animation: bgOrb2 8s ease-in-out infinite;
+        }
+
+        @keyframes bgOrb1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.2); }
+        }
+
+        @keyframes bgOrb2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, -50px) scale(1.3); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: linear-gradient(145deg, #1a1a1a 0%, #0f0f0f 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.1), 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: containerFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes containerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0,212,255,0.3), transparent);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, 20px) scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 1;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 212, 255, 0.5); }
+            50% { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 212, 255, 0.8); }
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #0f0f0f;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 4px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: white;
+            flex-shrink: 0;
+            border: 2px solid transparent;
+            animation: avatarPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .user .message-avatar {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .assistant .message-avatar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 16px 20px;
+            border-radius: 16px;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+
+        .user .message-content {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .assistant .message-content {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-bottom-left-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-block {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 12px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9em;
+            position: relative;
+            border: 1px solid #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+            animation: codeGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes codeGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.3); }
+        }
+
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.75em;
+            color: #00d4ff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .code-line {
+            color: #00d4ff;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: #1a1a1a;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            gap: 12px;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 16px 24px;
+            background: #0f0f0f;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 30px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s;
+            color: #fff;
+        }
+
+        #userInput::placeholder {
+            color: #666;
+        }
+
+        #userInput:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        #sendBtn {
+            padding: 16px 35px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        #sendBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        #sendBtn:active {
+            transform: translateY(0);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 16px 24px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .typing-indicator span {
+            height: 10px;
+            width: 10px;
+            background: #00d4ff;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 3px;
+            animation: typing 1.4s infinite;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+        }
+
+        .welcome-message h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .welcome-message .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: cardFloat 3s ease-in-out infinite;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0s; }
+        .feature-card:nth-child(2) { animation-delay: 0.5s; }
+        .feature-card:nth-child(3) { animation-delay: 1s; }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .feature-card h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: #00d4ff;
+            color: #0a0a0a;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            cursor: pointer;
+            margin-top: 8px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #00ffff;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-
 <body>
-    <nav class="navbar">
-        <div class="logo">lapis obsidianus</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="features.html">Features</a></li>
-            <li><a href="terms.html">Terms</a></li>
-            <li><a href="privacy.html">Privacy</a></li>
-        </ul>
-        <a class="add-btn" href="https://discord.com/oauth2/authorize?client_id=1462428873793867969">Add to Server</a>
-    </nav>
-
-    <section class="hero">
-        <p class="tag">Discord Utility & Security Bot</p>
-        <h1>Enhance your server with lapis obsidianus.</h1>
-        <p class="subtext">
-            A powerful bot for server automation, moderation, and engagement.
-            Keep your community Active, Powerful, and Engaged with a click of a button.
-        </p>
-
-        <div class="hero-buttons">
-            <a class="primary-btn" href="https://discord.com/oauth2/authorize?client_id=1462428873793867969">Add to Server →</a>
-            <a class="secondary-btn" href="terms.html">View Terms</a>
-        </div>
-    </section>
-
-    <!-- ⭐ FEATURE BOXES -->
-    <section class="features-list">
-        <div class="feature-box">
-            <h2>Easy Utils</h2>
-            <p>Easy to use util commands for that server boost.</p>
+    <div class="container">
+        <div class="header">
+            <h1>Want To Code?</h1>
+            <p>🚀 Your AI-Powered Coding Companion - Generate, Debug, & Learn</p>
         </div>
 
-        <div class="feature-box">
-            <h2>Instant Moderation</h2>
-            <p>Ban, kick, mute, and warn with precision at the speed of light.</p>
+        <div class="chat-container" id="chatContainer">
+            <div class="welcome-message">
+                <h2>Welcome to Want To Code? 💻</h2>
+                <p>I'm your AI coding assistant! I can generate code, debug errors, explain concepts, and help you learn.</p>
+                
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>🎯 Generate Code</h3>
+                        <p>Ask me to create functions, apps, or scripts</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🐛 Debug Help</h3>
+                        <p>Paste your errors and I'll help fix them</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📚 Explanations</h3>
+                        <p>Learn concepts with clear examples</p>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 30px; font-size: 0.95em; color: #666;">Try: "Create a to-do list in JavaScript" or "Explain async/await in Python"</p>
+            </div>
         </div>
 
-        <div class="feature-box">
-            <h2>Speed alternated chatbot</h2>
-            <p>A friendly chatbot to talk to or help you.</p>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Ask me to generate code, debug, or explain anything..." />
+            <button id="sendBtn">Send ⚡</button>
         </div>
-    </section>
+    </div>
 
-    <!-- ⭐ COMMAND BOX -->
-    <section class="command-box">
-        <h2>Bot Commands</h2>
-        <p>Explore all available commands below.</p>
-        <div class="command-list">
-            <code>,help</code>
-            <code>,ban</code>
-            <code>,kick</code>
-            <code>,mute</code>
-            <code>,warn</code>
-            <code>,clear</code>
-            <code>,modules</code>
-            <code>,lore</code>
-            <code>,serverinfo</code>
-            <code>,ping</code>
-            <code>,stats</code>
-            <code>,fmauth</code>
-            <code>,fm</code>
-            <code>,fmtop</code>
-            <code>,fmtoptracks</code>
-            <code>,fmrecent</code>
-            <code>,fmprofile</code>
-            <code>,addcmd</code>
-            <code>,delcmd</code>
-        </div>
-    </section>
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
 
+        let conversationHistory = [];
+
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'assistant'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = isUser ? '👤' : '🤖';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (!isUser && content.includes('```')) {
+                const parts = content.split('```');
+                let html = '';
+                parts.forEach((part, index) => {
+                    if (index % 2 === 0) {
+                        html += escapeHtml(part).replace(/\n/g, '<br>');
+                    } else {
+                        const lines = part.split('\n');
+                        const lang = lines[0].trim() || 'code';
+                        const code = lines.slice(1).join('\n');
+                        html += `<div class="code-block" data-lang="${lang}">${escapeHtml(code)}<button class="copy-btn" onclick="copyCode(this)">Copy Code</button></div>`;
+                    }
+                });
+                contentDiv.innerHTML = html;
+            } else {
+                contentDiv.innerHTML = escapeHtml(content).replace(/\n/g, '<br>');
+            }
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'message assistant';
+            indicator.id = 'typing-indicator';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = '🤖';
+            
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.style.display = 'block';
+            typingDiv.innerHTML = '<span></span><span></span><span></span>';
+            
+            indicator.appendChild(avatar);
+            indicator.appendChild(typingDiv);
+            chatContainer.appendChild(indicator);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.copyCode = function(btn) {
+            const codeBlock = btn.parentElement;
+            const code = codeBlock.textContent.replace('Copy Code', '').trim();
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy Code';
+                }, 2000);
+            });
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            const welcome = chatContainer.querySelector('.welcome-message');
+            if (welcome) welcome.remove();
+
+            addMessage(message, true);
+            userInput.value = '';
+            
+            conversationHistory.push({ role: 'user', content: message });
+
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        messages: conversationHistory,
+                        system: 'You are an expert coding assistant called "Want To Code?". Your main job is to:\n\n1. GENERATE CODE: When users ask you to create something, always provide complete, working code examples with proper syntax highlighting using triple backticks (```language)\n2. DEBUG & FIX: Help users debug their code by explaining errors and providing corrected versions\n3. EXPLAIN: Break down complex coding concepts into simple explanations with examples\n4. OPTIMIZE: Suggest better ways to write code for performance and readability\n\nAlways:\n- Provide ready-to-use code that users can copy and paste\n- Use code blocks with the language name (```python, ```javascript, etc.)\n- Give clear explanations alongside your code\n- Be encouraging and helpful\n- Format code properly with indentation\n\nYou can work with any programming language. Make your responses practical and actionable!'
+                    })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator();
+
+                if (data.content && data.content[0]) {
+                    const assistantMessage = data.content[0].text;
+                    conversationHistory.push({ role: 'assistant', content: assistantMessage });
+                    addMessage(assistantMessage, false);
+                } else {
+                    addMessage("⚠️ Sorry, I encountered an error. Please try again!", false);
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage("⚠️ Oops! Something went wrong. Please try again.", false);
+                console.error('Error:', error);
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
 </body>
 </html>
