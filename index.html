@@ -70,6 +70,8 @@
             height: 90vh;
             border: 1px solid rgba(255, 255, 255, 0.05);
             animation: containerFloat 4s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
         }
 
         @keyframes containerFloat {
@@ -269,10 +271,6 @@
             text-transform: uppercase;
         }
 
-        .code-line {
-            color: #00d4ff;
-        }
-
         .input-container {
             padding: 20px;
             background: #1a1a1a;
@@ -426,6 +424,15 @@
             background: #00ffff;
             transform: scale(1.05);
         }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6666;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -568,6 +575,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01'
                     },
                     body: JSON.stringify({
                         model: 'claude-sonnet-4-20250514',
@@ -577,20 +585,28 @@
                     })
                 });
 
-                const data = await response.json();
                 hideTypingIndicator();
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
 
                 if (data.content && data.content[0]) {
                     const assistantMessage = data.content[0].text;
                     conversationHistory.push({ role: 'assistant', content: assistantMessage });
                     addMessage(assistantMessage, false);
                 } else {
-                    addMessage("⚠️ Sorry, I encountered an error. Please try again!", false);
+                    throw new Error('Invalid response format');
                 }
             } catch (error) {
                 hideTypingIndicator();
-                addMessage("⚠️ Oops! Something went wrong. Please try again.", false);
                 console.error('Error:', error);
+                
+                const errorMsg = `⚠️ I encountered an error connecting to the AI service. This usually happens because:\n\n1. The artifact needs to be opened in Claude.ai (not a deployed website)\n2. Or you need to configure your own API key\n\nError details: ${error.message}`;
+                
+                addMessage(errorMsg, false);
             }
         }
 
